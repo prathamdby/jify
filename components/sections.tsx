@@ -141,7 +141,7 @@ export function FAQSection() {
             <strong className="text-neutral-800">
               Does converting restore lost JPG quality?
             </strong>{" "}
-            No. JPG is already lossy—conversion to PNG preserves what remains
+            No. JPG is already lossy. Conversion to PNG preserves what remains
             but can&apos;t recover discarded detail.
           </p>
           <p>

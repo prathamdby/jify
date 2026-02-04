@@ -13,7 +13,7 @@ export function Hero() {
         </h1>
         <p className="text-neutral-600 mb-3">
           Drop your JPG files and get crisp, lossless PNGs. Resize, strip
-          metadata, or fix orientation—all in one click.
+          metadata, or fix orientation, all in one click.
         </p>
         <p className="text-neutral-500 mb-6">
           Supports batch conversion. Quality controls. No watermarks. Files

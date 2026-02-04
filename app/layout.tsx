@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Convert JPG to PNG Instantly | Jify",
     description:
-      "Convert JPG files to PNG and download fast — no signup needed.",
+      "Convert JPG files to PNG and download fast, no signup needed.",
   },
 };
 
