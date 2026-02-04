@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Jify",
-  description: "Convert your JPEG/JPG images to PNG images",
+  title: "Convert JPG to PNG Instantly | Jify",
+  description:
+    "Convert JPG to PNG online for free. Resize, strip metadata, and download crisp PNGs instantly in your browser.",
+  keywords:
+    "jpg to png, convert jpg to png, jpeg to png converter, image converter online",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "Jify",
-    description: "Convert your JPEG/JPG images to PNG images",
+    title: "Convert JPG to PNG Instantly | Jify",
+    description:
+      "Free JPG to PNG converter with resize controls. Process images and download fast.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Convert JPG to PNG Instantly | Jify",
+    description:
+      "Convert JPG files to PNG and download fast — no signup needed.",
   },
 };
 
@@ -32,9 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <Toaster richColors />
         {children}
       </body>
