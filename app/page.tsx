@@ -16,11 +16,28 @@ import { DownloadIcon, Loader2Icon, Repeat2 } from "lucide-react";
 import Image from "next/image";
 import JSZip from "jszip";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Home() {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<string[]>([]);
+
+  const [resizeOption, setResizeOption] = useState("original");
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const [fitOption, setFitOption] = useState("max");
+  const [quality, setQuality] = useState(100);
+  const [strip, setStrip] = useState(false);
+  const [autoOrient, setAutoOrient] = useState(false);
 
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -38,6 +55,13 @@ export default function Home() {
     images.forEach((image) => {
       formData.append("image", image);
     });
+    formData.append("resizeOption", resizeOption);
+    formData.append("height", height.toString());
+    formData.append("width", width.toString());
+    formData.append("fitOption", fitOption);
+    formData.append("quality", quality.toString());
+    formData.append("strip", strip.toString());
+    formData.append("autoOrient", autoOrient.toString());
     try {
       const response = await fetch("/api/convert", {
         method: "POST",
@@ -123,6 +147,106 @@ export default function Home() {
                   onChange={handleImagesChange}
                   disabled={loading}
                 />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="resizeOption">Resize Output Images</Label>
+                <Select
+                  defaultValue="original"
+                  onValueChange={(value) => setResizeOption(value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Resize Option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="original">
+                        Keep Original Size
+                      </SelectItem>
+                      <SelectItem value="resize">
+                        Enter Height x Width (px)
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {resizeOption === "resize" && (
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="height">Height (px)</Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    placeholder="Enter Height"
+                    required
+                    min={1}
+                    onChange={(e) => setHeight(Number(e.target.value))}
+                  />
+                  <Label htmlFor="width">Width (px)</Label>
+                  <Input
+                    id="width"
+                    type="number"
+                    placeholder="Enter Width"
+                    required
+                    min={1}
+                    onChange={(e) => setWidth(Number(e.target.value))}
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="resizeOption">Fit</Label>
+                <Select
+                  defaultValue="max"
+                  onValueChange={(value) => setFitOption(value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Resize Option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="max">Max</SelectItem>
+                      <SelectItem value="crop">Crop</SelectItem>
+                      <SelectItem value="scale">Scale</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="resizeOption">Quality</Label>
+                <Input
+                  id="quality"
+                  type="number"
+                  placeholder="Enter Quality"
+                  required
+                  min={1}
+                  max={100}
+                  defaultValue={75}
+                  onChange={(e) => setQuality(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="flex flex-row justify-between">
+                <div className="flex flex-row gap-2">
+                  <Label htmlFor="strip">Strip</Label>
+                  <Checkbox
+                    id="strip"
+                    checked={strip}
+                    onCheckedChange={(checked) => setStrip(Boolean(checked))}
+                  />
+                </div>
+
+                <div className="flex flex-row gap-2">
+                  <Label htmlFor="autoOrient">Auto Orient</Label>
+                  <Checkbox
+                    id="autoOrient"
+                    checked={autoOrient}
+                    onCheckedChange={(checked) =>
+                      setAutoOrient(Boolean(checked))
+                    }
+                  />
+                </div>
               </div>
             </div>
           </form>

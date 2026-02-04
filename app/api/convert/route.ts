@@ -21,12 +21,54 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const resizeOption = formData.get("resizeOption") as string;
+    const height = parseInt(formData.get("height") as string) || 0;
+    const width = parseInt(formData.get("width") as string) || 0;
+    const fitOption = formData.get("fitOption") as string;
+    const quality = parseInt(formData.get("quality") as string) || 100;
+    const strip = formData.get("strip") === "true";
+    const autoOrient = formData.get("autoOrient") === "true";
+
+    const fitMap: Record<string, "inside" | "cover" | "fill"> = {
+      max: "inside",
+      crop: "cover",
+      scale: "fill",
+    };
+
     const convertedImages = await Promise.all(
       images.map(async (image: File) => {
         const buffer = await image.arrayBuffer();
         try {
-          const sharpImage = await sharp(buffer).toFormat("png").toBuffer();
-          return sharpImage.toString("base64");
+          let sharpImage = sharp(buffer);
+
+          if (autoOrient) {
+            const metadata = await sharpImage.metadata();
+            if (metadata.orientation && metadata.orientation > 1) {
+              const orientations: Record<number, number> = {
+                3: 180,
+                6: 90,
+                8: -90,
+              };
+              const angle = orientations[metadata.orientation] || 0;
+              if (angle !== 0) {
+                sharpImage = sharpImage.rotate(angle);
+              }
+            }
+          }
+
+          if (resizeOption === "resize" && width > 0 && height > 0) {
+            sharpImage = sharpImage.resize(width, height, {
+              fit: fitMap[fitOption] || "inside",
+            });
+          }
+
+          if (!strip) {
+            sharpImage = sharpImage.withMetadata();
+          }
+
+          const result = await sharpImage.png({ quality }).toBuffer();
+
+          return result.toString("base64");
         } catch (error) {
           return null;
         }
